@@ -1,0 +1,23 @@
+h1 {
+  font-size: 2rem;
+}
+
+.characters {
+  float: left;
+  width: 240px;
+  height: 180px;
+  text-align: center;
+  margin-right: 1rem;
+
+  border: 1px solid black; /* Temp */
+}
+
+.container:before,
+.container:after {
+  content: " ";
+  display: table; 
+}
+
+.container:after {
+  clear: both;
+}
