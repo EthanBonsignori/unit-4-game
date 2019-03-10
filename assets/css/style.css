@@ -1,5 +1,10 @@
 h1 {
   font-size: 2rem;
+  display: block;
+}
+
+#attack {
+  display: inline-block;
 }
 
 .characters {
@@ -9,7 +14,11 @@ h1 {
   text-align: center;
   margin-right: 1rem;
 
-  border: 1px solid black; /* Temp */
+  border: 4px solid black; /* Temp */
+}
+
+.container {
+  margin-top: 1rem;
 }
 
 .container:before,
@@ -20,4 +29,20 @@ h1 {
 
 .container:after {
   clear: both;
+}
+
+.player {
+  border: 4px solid green;
+}
+
+.enemy {
+  border: 4px solid red;
+}
+
+.hidden {
+  display: none;
+}
+
+.enemy-div {
+  background-color: purple;
 }
