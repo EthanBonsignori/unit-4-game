@@ -63,28 +63,25 @@ $( document ).ready(function() {
         playerChar = char1;
         playerName = "Name1";
         char1.player = true;
-        hasId = true;
       }
       if (charId == 'char2') {
         playerChar = char2;
         playerName = "Name2";
         char2.player = true;
-        hasId = true;
       }
       if (charId == 'char3') {
         playerChar = char3;
         playerName = "Name3";
         char3.player = true;
-        hasId = true;
       }
       if (charId == 'char4') {
         playerChar = char4;
         playerName = "Name4";
         char4.player = true;
-        hasId = true;
       }
       findEnemy();
       moveEnemy();
+      hasId = true;
     }
   });
 
