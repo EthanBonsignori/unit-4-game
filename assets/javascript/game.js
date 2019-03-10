@@ -4,6 +4,7 @@ $( document ).ready(function() {
   let playerChar = null;
   let playerName = '';
   let charId = '';
+  let hasId = false;
 
   chars = [
     char1 = {
@@ -54,30 +55,36 @@ $( document ).ready(function() {
 
   // Select a character
   charsGet.on("click", function() {
-     charId = this.id;
-      if (!playerChar) {
-        if (charId == 'char1') {
-          playerChar = char1;
-          playerName = "char1";
-          char1.player = true;
-        }
-        if (charId == 'char2') {
-          playerChar = char2;
-          playerName = "char2";
-          char2.player = true;
-        }
-        if (charId == 'char3') {
-          playerChar = char3;
-          playerName = "char3";
-          char3.player = true;
-        }
-        if (charId == 'char4') {
-          playerChar = char4;
-          playerName = "char4";
-          char4.player = true;
-        }
-        findEnemy();
-        moveEnemy();
+    if (!hasId) { 
+      charId = this.id;
+    }
+    if (!playerChar) {
+      if (charId == 'char1') {
+        playerChar = char1;
+        playerName = "Name1";
+        char1.player = true;
+        hasId = true;
+      }
+      if (charId == 'char2') {
+        playerChar = char2;
+        playerName = "Name2";
+        char2.player = true;
+        hasId = true;
+      }
+      if (charId == 'char3') {
+        playerChar = char3;
+        playerName = "Name3";
+        char3.player = true;
+        hasId = true;
+      }
+      if (charId == 'char4') {
+        playerChar = char4;
+        playerName = "Name4";
+        char4.player = true;
+        hasId = true;
+      }
+      findEnemy();
+      moveEnemy();
     }
   });
 
@@ -92,6 +99,7 @@ $( document ).ready(function() {
       }
     }
   
+  // Pushes enemies to the enemy div and changes player border
   moveEnemy = () => {
     for (let i = 0; i < chars.length; i++)
       if (chars[i].charSelected){
