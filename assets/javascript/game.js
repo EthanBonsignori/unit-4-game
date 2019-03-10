@@ -77,6 +77,7 @@ $( document ).ready(function() {
           char4.player = true;
         }
         findEnemy();
+        moveEnemy();
     }
   });
 
@@ -89,6 +90,10 @@ $( document ).ready(function() {
       if (!chars[i].charSelected) {
         chars[i].enemy = true;
       }
+    }
+  
+  moveEnemy = () => {
+    for (let i = 0; i < chars.length; i++)
       if (chars[i].charSelected){
         chars[i].charGet.addClass( 'player' )
       } else {
@@ -99,7 +104,7 @@ $( document ).ready(function() {
       selectText.fadeOut(350, function() {
         selectText.text( 'Your Character' ).fadeIn(350);
       })
-    }
+  }
     
   }
   // Select an enemy
