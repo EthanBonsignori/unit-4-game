@@ -3,8 +3,8 @@ h1 {
   display: block;
 }
 
-#attack {
-  display: inline-block;
+.attack-button {
+  display: block;
 }
 
 .characters {
@@ -13,8 +13,37 @@ h1 {
   height: 180px;
   text-align: center;
   margin-right: 1rem;
+  padding: 1px 1rem 1rem 1rem;
 
-  border: 4px solid black; /* Temp */
+  border: 4px solid black; /* Temp */ 
+  overflow: hidden;
+}
+
+.char-text {
+  display: inline-block;
+}
+
+.char-pic-border {
+  height: 90%;
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#pic1 {
+  background-image: url(../images/char1.jpg);
+}
+
+#pic2 {
+  background-image: url(../images/char2.jpg);
+}
+
+#pic3 {
+  background-image: url(../images/char3.jpg);
+}
+
+#pic4 {
+  background-image: url(../images/char4.jpg);
 }
 
 .container {
