@@ -1,30 +1,27 @@
 $( document ).ready( function() {
 
 // Declare variables
-let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, consoleLog, chars;
+let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, consoleLog;
 
-  //initialize = () => {
-    
+  initialize = () => {
     playerChar = null;
-    playerId = '';
-
     fighterChar = null;
+    playerId = '';
     fighterId = '';
-
     hasId = false;
     gameOver = false;
- 
-
     enemies = [];
-
+    initCl();
+  };
+    
     consoleLog = 0;
 
-
-    chars = [
+    let chars = [
       char1 = {
         name: 'Pooh',
         charId: 'char1',
         hp: 100,
+        baseHp: 100,
         atk: 7,
         baseAtk: 10,
         counterAtk: 5,
@@ -38,9 +35,10 @@ let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, cons
         name: 'Piglet',
         charId: 'char2',
         hp: 100,
+        baseHp: 100,
         atk: 100,
         baseAtk: 10,
-        counterAtk: 1000,
+        counterAtk: 5,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char2' ),
@@ -51,6 +49,7 @@ let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, cons
         name: 'Tigger',
         charId: 'char3',
         hp: 100,
+        baseHp: 100,
         atk: 10,
         baseAtk: 10,
         counterAtk: 5,
@@ -64,6 +63,7 @@ let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, cons
         name: 'Owl',
         charId: 'char4',
         hp: 100,
+        baseHp: 100,
         atk: 10,
         baseAtk: 10,
         counterAtk: 5,
@@ -73,7 +73,7 @@ let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, cons
         charHpGet: $( '#char4-hp' ),
       },
     ];
-  //}; // End Initialize
+
 
   // Get html elements
   let charsGet = $( '.characters' );
@@ -84,15 +84,16 @@ let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, cons
   let attack = $( '#attack' );
   let attackButton = $( '.attack-button' );
   let resetButton = $( '#reset-button' );
+  let resetPosition = $( '.characters-start' )
+  let defeated = $( '.defeated' )
 
-  // Select a character
+  // Select a player character
   charsGet.on( "click", function() {
     if ( !hasId && !playerChar && !gameOver ) { 
       playerId = this.id;
       charsGet.each( function( i ) { 
         if ( chars[i].charId === playerId ) {
           playerChar = chars[i];
-          playerName = chars[i].name;
           chars[i].isPlayer = true;
           chars[i].charGet.addClass( 'player' )
         } else {
@@ -103,16 +104,15 @@ let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, cons
       moveEnemy();
       hasId = true;
     };
-
     // Select an enemy to Fight
     if ( $( this ).hasClass( 'enemy' ) ) {
       if ( !gameOver && !fighterChar ) {
-        fighterId = this.id
+        fighterId = this.id;
         charsGet.each( function( i ) {
           if ( chars[i].charId === fighterId ) {
             fighterChar = chars[i];
             fighterName = chars[i].name;
-            defenderDiv.prepend( this );
+            defenderDiv.append( this );
             // Animations
             defenderDiv.show( 'slow' );
             attackButton.show();
@@ -135,6 +135,7 @@ let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, cons
       enemyDiv.show( 'slow' );
       selectText.fadeOut( 350, function() {
         selectText.text( 'Your Character' ).fadeIn( 350 );
+        enemiesText.text( 'Select an Enemy to fight!' ).fadeIn( 350 );
       } )
     } )
   };
@@ -162,8 +163,8 @@ let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, cons
 
   // Win & Lose
   winFight = () => {
-    console.log( 'you won this fight' )
-    fighterChar.charGet.hide();
+    console.log( 'you won this fight' );
+    defeated.append( fighterChar.charGet )
     enemies.splice( enemies.indexOf( fighterChar.name ), 1 );
     if ( enemies.length === 0 ) {
       winGame();
@@ -189,7 +190,7 @@ let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, cons
     enemiesText.fadeOut( 150, function() {
       enemiesText.text( 'You Win!!!' ).fadeIn( 150 );
     } )
-  }
+  };
 
   loseGame = () => {
     gameOver = true;
@@ -200,31 +201,85 @@ let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, cons
     enemiesText.fadeOut( 150, function() {
       enemiesText.text( 'You lose, try again.' ).fadeIn( 150 );
     } )
-  }
+  };
 
   // Reset
   resetButton.on( 'click', function() {
     initialize();
+    resetChars();
+    resetGameState();
+    gameOver = false;
   } );
 
+  resetChars = () => {
+    $.each(chars, function ( i, prop ) {
+      prop.isPlayer = false;
+      prop.isEnemy = false;
+      prop.hp = prop.baseHp;
+      prop.atk = prop.baseAtk;
+      resetPosition.prepend( prop.charGet );
+      prop.charHpGet.text( prop.baseHp )
+    } )
+    charsGet.removeClass( 'player enemy' );
+  };
+
+  resetGameState = () => {
+    resetButton.hide();
+    attackButton.hide();
+    selectText.fadeOut( 150, function() {
+      selectText.text( 'Chose your Character!' ).fadeIn( 150 );
+    } );
+    enemiesText.fadeOut( 150, function() {
+      enemiesText.text( 'Select an Enemy to fight!' );
+    } );
+  };
+
+  initCl = () => {
+    console.log( 
+      'playerChar: '    + playerChar +
+      'fighterChar: '   + fighterChar +
+      'playerId: '      + playerId +
+      'fighterId: '     + fighterId +
+      'hasId: '         + hasId +
+      'gameOver: '      + gameOver +
+      'enemies: '       + enemies 
+    )
+  
+  }
 
   // Console log on ` backquote `
   $( document ).keyup( function( event ) {
     if ( event.keyCode == 192 ) {
       consoleLog++;
       let enemyList = enemies.join( ', ' );
-      console.log( '======== Begin Log ' + consoleLog + ' ========' )
+      console.log( '======== Begin Log ' + consoleLog + ' ========' );
       if (playerChar) { 
         console.log( 'Player: ' + playerChar.name + ' (' + playerId + ')');
-        console.log( 'Player Attack: ' + playerChar.atk + " | HP: " + playerChar.hp )
+        console.log( 'Player Attack: ' + playerChar.atk + " | HP: " + playerChar.hp );
       };
       if (fighterChar) { 
         console.log( 'Fighter: ' + fighterChar.name + ' (' + fighterId + ')' );
-        console.log( 'Fighter Attack: ' + fighterChar.atk + " | HP: " + fighterChar.hp )
+        console.log( 'Fighter Attack: ' + fighterChar.atk + " | HP: " + fighterChar.hp );
       };
       if ( playerChar ) { console.log( 'Enemies: ' + enemyList ) };
-      console.log( '======== End Log ' + consoleLog + ' ========' )
+      console.log( '======== End Log ' + consoleLog + ' ========' );
     }
   } );
 
-} );
+
+  initCl = () => {
+    console.log( 
+      'playerChar: '       + playerChar +
+      ' | fighterChar: '   + fighterChar +
+      ' | playerId: '      + playerId +
+      ' | fighterId: '     + fighterId +
+      ' | hasId: '         + hasId +
+      ' | gameOver: '      + gameOver +
+      ' | Enemies: '       + enemies 
+    )
+  
+  }
+
+  initialize();
+
+} ); // End Document ready
