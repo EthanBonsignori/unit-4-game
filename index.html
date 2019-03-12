@@ -9,13 +9,17 @@
   <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="assets/css/style.css">
 
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 </head>
 
 <body>
 
-<h1 id="title">RPG</h1>
+<div class="bg">
+
+<h1 id="title">Pooh RPG</h1>
 
 <div class="container">
 
@@ -24,55 +28,55 @@
     <h3 class="char-text">Pooh the Destroyer</h3>
     <div class="char-pic-border" id="pic1">
     </div>
-    <h3 class="char-text" id="name-hp"></h3>
+    <h3 class="char-text" id="char1-hp">100</h3>
   </div>
 
   <!-- Character 2 -->
   <div class="characters" id="char2" value="2">
-    <h3 class="char-text">Piglet the Buff</h3>
+    <h3 class="char-text">Man Bear Piglet </h3>
     <div class="char-pic-border" id="pic2">
       </div>
-    <h3 class="char-text" id="name-hp"></h3>
+    <h3 class="char-text" id="char2-hp">100</h3>
   </div>
 
   <!-- Character 3 -->
   <div class="characters" id="char3" value="3">
-    <h3 class="char-text">Sir Tigger</h3>
+    <h3 class="char-text">Convict Tigger</h3>
     <div class="char-pic-border" id="pic3">
       </div>
-    <h3 class="char-text" id="name-hp"></h3>
+    <h3 class="char-text" id="char3-hp">100</h3>
   </div>
 
   <!-- Character 4 -->
   <div class="characters" id="char4" value="4">
-    <h3 class="char-text">Owl, Great Wizard</h3>
+    <h3 class="char-text">Owl, Feathery Wizard</h3>
     <div class="char-pic-border" id="pic4">
       </div>
-    <h3 class="char-text" id="name-hp"></h3>
+    <h3 class="char-text" id="char4-hp">100</h3>
   </div>
 
   <div class="attack-button hidden"> 
-      <button id="attack">Attack</button>
+      <button id="attack"><i class="fas fa-angle-double-right"> Attack</i></button>
   </div>
 
-  <div class="container defender hidden">
-      <h1>Defender</h1>
+  <div class="defender hidden">
   </div>
  
 </div> <!-- End Container -->
 
 <h1 id="your-char">Choose your Character!</h1>
 
+
 <!-- Space for selected char to move -->
 <div id="placeholder"></div>
 
 
 <div class="container">
-  <div class="enemies hidden"> <h1>Enemies</h1> </div>
+  <div class="enemies hidden"> <h1 id="enemies-text">Select an Enemy to fight!</h1> </div>
 </div>
 
 
-
+</div> <!-- End Background --> 
 </body>
 
 <script src="assets/javascript/game.js"></script>

@@ -1,22 +1,49 @@
-h1 {
-  font-size: 2rem;
-  display: block;
+body, html {
+  height: 100%;
+  color: #ffffff;
+  overflow: hidden;
 }
 
-.attack-button {
+.bg {
+  background-image: url(../images/background.png);
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+h1 {
+  font-size: 2rem;
   display: block;
 }
 
 .characters {
   float: left;
   width: 240px;
-  height: 180px;
+  height: 200px;
   text-align: center;
   margin-right: 1rem;
   padding: 1px 1rem 1rem 1rem;
+  background: #000;
 
   border: 4px solid black; /* Temp */ 
   overflow: hidden;
+}
+
+.attack-button {
+  position: absolute;
+  left: 18.3rem;
+  top: 9rem;
+}
+
+.defender {
+  position: relative;
+  left: 5rem;
+}
+
+#defender-text {
+  position: absolute;
+  bottom: 0;
 }
 
 .char-text {
@@ -71,3 +98,4 @@ h1 {
 .hidden {
   display: none;
 }
+
