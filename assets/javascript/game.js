@@ -1,7 +1,7 @@
 $( document ).ready( function() {
 
 // Declare variables
-let playerChar, playerId, fighterChar, fighterId, hasId, isFighting, enemies, consoleLog, chars, gameLost, gameWon;
+let playerChar, playerId, fighterChar, fighterId, hasId, gameOver, enemies, consoleLog, chars;
 
   //initialize = () => {
     
@@ -12,9 +12,8 @@ let playerChar, playerId, fighterChar, fighterId, hasId, isFighting, enemies, co
     fighterId = '';
 
     hasId = false;
-    isFighting = false;
-    gameLost = false;
-    gameWon = false;
+    gameOver = false;
+ 
 
     enemies = [];
 
@@ -79,16 +78,16 @@ let playerChar, playerId, fighterChar, fighterId, hasId, isFighting, enemies, co
   // Get html elements
   let charsGet = $( '.characters' );
   let enemyDiv = $( '.enemies' );
-  let selectText = $( '#your-char' )
-  let enemiesText = $( '#enemies-text' )
-  let defenderDiv = $( '.defender' )
-  let attackButton = $( '.attack-button' )
-  let attack = $( '#attack' )
-  let resetButton = $( '#reset-button' )
+  let selectText = $( '#your-char' );
+  let enemiesText = $( '#enemies-text' );
+  let defenderDiv = $( '.defender' );
+  let attack = $( '#attack' );
+  let attackButton = $( '.attack-button' );
+  let resetButton = $( '#reset-button' );
 
   // Select a character
   charsGet.on( "click", function() {
-    if ( !hasId && !playerChar && !gameLost) { 
+    if ( !hasId && !playerChar && !gameOver ) { 
       playerId = this.id;
       charsGet.each( function( i ) { 
         if ( chars[i].charId === playerId ) {
@@ -107,9 +106,8 @@ let playerChar, playerId, fighterChar, fighterId, hasId, isFighting, enemies, co
 
     // Select an enemy to Fight
     if ( $( this ).hasClass( 'enemy' ) ) {
-      if ( !isFighting && !fighterChar )
+      if ( !gameOver && !fighterChar ) {
         fighterId = this.id
-        isFighting = true;
         charsGet.each( function( i ) {
           if ( chars[i].charId === fighterId ) {
             fighterChar = chars[i];
@@ -122,7 +120,9 @@ let playerChar, playerId, fighterChar, fighterId, hasId, isFighting, enemies, co
           enemiesText.fadeOut( 350, function() {
             enemiesText.text( 'Fighting...' ).fadeIn( 350 );
           } )
+          
         } )
+      }    
     }
   } );
 
@@ -180,6 +180,7 @@ let playerChar, playerId, fighterChar, fighterId, hasId, isFighting, enemies, co
   };
 
   winGame = () => {
+    gameOver = true;
     console.log( 'YOU WIN' )
 
     // Animations
@@ -191,6 +192,7 @@ let playerChar, playerId, fighterChar, fighterId, hasId, isFighting, enemies, co
   }
 
   loseGame = () => {
+    gameOver = true;
     console.log( 'You lose' );
 
     resetButton.show();
