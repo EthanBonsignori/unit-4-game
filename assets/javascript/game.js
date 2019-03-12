@@ -2,15 +2,14 @@ $( document ).ready( function() {
 
   // Declare variables
   let playerChar = null;
-  let playerName = '';
   let playerId = '';
 
   let fighterChar = null;
-  let fighterName = '';
   let fighterId = '';
 
   let hasId = false;
   let isFighting = false;
+
   let enemies = [];
 
   let consoleLog = 0;
@@ -21,7 +20,7 @@ $( document ).ready( function() {
       name: 'Pooh',
       charId: 'char1',
       hp: 100,
-      atk: 10,
+      atk: 7,
       baseAtk: 10,
       counterAtk: 5,
       isPlayer: false,
@@ -134,21 +133,43 @@ $( document ).ready( function() {
 
   // Attack & Defend
   attack.on( 'click', function() {
-    // Check if player hp is greater than the incoming attack AND fighter hp is greater than the next player attack
-    if ( playerChar.hp > 0 && fighterChar.hp > playerChar.atk ) {
       playerChar.hp -= fighterChar.counterAtk;        // Player loses hp equal to fighter's counter attack
       fighterChar.hp -= playerChar.atk;               // Fighter loses hp equal to player's attack
-      playerChar.atk += playerChar.baseAtk;           // Increment player's attackk by base attack
-      // Update HP values
+      // Update HP values on screen
       playerChar.charHpGet.text( playerChar.hp );     
       fighterChar.charHpGet.text( fighterChar.hp );
-    } else if ( playerChar.hp <= 0 ) {
+      // Check if player will fall to or below 0 hp on next attack
+    if ( playerChar.hp <= fighterChar.counterAtk ) {
+      playerChar.hp -= fighterChar.counterAtk;
       loseGame();
+      // Check if fighter will fall to or below 0 hp on next attack
+    } else if ( fighterChar.hp <= playerChar.atk ) {
+      fighterChar.hp -= playerChar.atk;
+      winFight();
     }
+    playerChar.atk += playerChar.baseAtk;           // Increment player's attackk by base attack
   });
 
   // Win & Lose
+  winFight = () => {
+    console.log("you won this fight")
+    fighterChar.charGet.remove();
+    enemies.splice( enemies.indexOf( fighterChar.name ), 1 );
+    if ( enemies.length === 0 ) {
+      winGame();
+    } else {
+    fighterChar = null;
+    isFighting = false;
+    }
+  };
 
+  winGame = () => {
+    console.log( 'YOU WIN' )
+  }
+
+  loseGame = () => {
+    console.log( 'You lose' );
+  }
   // Reset
 
   // Console log on ` backquote `

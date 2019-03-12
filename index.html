@@ -81,3 +81,26 @@
 
 <script src="assets/javascript/game.js"></script>
 </html>
+
+
+
+<!-- 
+
+      if ( playerChar.hp >= 1 && fighterChar.hp >= 1 ) {
+      playerChar.hp -= fighterChar.counterAtk;        // Player loses hp equal to fighter's counter attack
+      fighterChar.hp -= playerChar.atk;               // Fighter loses hp equal to player's attack
+      playerChar.atk += playerChar.baseAtk;           // Increment player's attackk by base attack
+      // Update HP values on screen
+      playerChar.charHpGet.text( playerChar.hp );     
+      fighterChar.charHpGet.text( fighterChar.hp );
+      // Check if player will fall to or below 0 hp on next attack
+    } else if ( playerChar.hp <= fighterChar.counterAtk ) {
+      playerChar.hp -= fighterChar.counterAtk;
+      loseGame();
+      // Check if fighter will fall to or below 0 hp on next attack
+    } else if ( fighterChar.hp <= playerChar.atk ) {
+      fighterChar.hp -= playerChar.atk;
+      winFight();
+    }
+    
+-->
