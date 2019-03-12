@@ -30,6 +30,30 @@ h1 {
   overflow: hidden;
 }
 
+.dmg-container {
+  height: 100%;
+  width: 3rem;
+  text-align: left;
+  font-size: 2.8rem;
+  line-height: 2.3rem;
+  color: red;
+}
+
+
+#dmg-taken-player1,
+#dmg-taken-player2,
+#dmg-taken-player3,
+#dmg-taken-player4 {
+  color: rgb(0, 255, 0);
+}
+
+#dmg-taken-enemy1,
+#dmg-taken-enemy2,
+#dmg-taken-enemy3,
+#dmg-taken-enemy4 {
+  color: rgb(255, 0, 0);
+}
+
 .attack-button {
   position: absolute;
   left: 18.3rem;

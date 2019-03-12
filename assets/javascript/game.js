@@ -11,7 +11,7 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
     hasId = false;
     gameOver = false;
     enemies = [];
-    initCl();
+    initHp();
   };
     
     consoleLog = 0;
@@ -29,6 +29,7 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
         isEnemy: false,
         charGet: $( '#char1' ),
         charHpGet: $( '#char1-hp' ),
+        dmgList: $( '#char1-dmg '),
       },
 
       char2 = {
@@ -43,6 +44,7 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
         isEnemy: false,
         charGet: $( '#char2' ),
         charHpGet: $( '#char2-hp' ),
+        dmgList: $( '#char2-dmg '),
       },
 
       char3 = {
@@ -57,6 +59,7 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
         isEnemy: false,
         charGet: $( '#char3' ),
         charHpGet: $( '#char3-hp' ),
+        dmgList: $( '#char3-dmg '),
       },
 
       char4 = {
@@ -71,6 +74,7 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
         isEnemy: false,
         charGet: $( '#char4' ),
         charHpGet: $( '#char4-hp' ),
+        dmgList: $( '#char4-dmg '),
       },
     ];
 
@@ -84,8 +88,8 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
   let attack = $( '#attack' );
   let attackButton = $( '.attack-button' );
   let resetButton = $( '#reset-button' );
-  let resetPosition = $( '.characters-start' )
-  let defeated = $( '.defeated' )
+  let resetPosition = $( '.characters-start' );
+  let defeated = $( '.defeated' );
 
   // Select a player character
   charsGet.on( "click", function() {
@@ -145,6 +149,7 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
     if ( fighterChar && playerChar.hp > 0 ) {
         playerChar.hp -= fighterChar.counterAtk;        // Player loses hp equal to fighter's counter attack
         fighterChar.hp -= playerChar.atk;               // Fighter loses hp equal to player's attack
+        damageText();
         // Update HP values on screen
         playerChar.charHpGet.text( playerChar.hp );     
         fighterChar.charHpGet.text( fighterChar.hp );
@@ -160,6 +165,20 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
       playerChar.atk += playerChar.baseAtk;           // Increment player's attack by base attack
     }
   } );
+
+  // Display and animate damage taken and given
+  damageText = () => {
+    if ( ( playerChar.dmgList ).children().length >= 3 ) {
+      playerChar.dmgList.children().last().fadeOut( 2000 )
+    }
+    if ( ( fighterChar.dmgList ).children().length >= 3 ) {
+      fighterChar.dmgList.children().last().fadeOut( 2000 )
+    }
+    fighterChar.dmgList.prepend( '<p class="dmg-text"> -' + playerChar.atk + '</p>' );
+    playerChar.dmgList.prepend( '<p class="dmg-text"> -' + fighterChar.counterAtk + '</p>' );
+    //fighterChar.dmgTakenPlayer.fadeOut( 5000 );
+    //playerChar.dmgTakenEnemy.fadeOut( 5000 );
+  }
 
   // Win & Lose
   winFight = () => {
@@ -218,7 +237,7 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
       prop.hp = prop.baseHp;
       prop.atk = prop.baseAtk;
       resetPosition.prepend( prop.charGet );
-      prop.charHpGet.text( prop.baseHp )
+      prop.charHpGet.text( prop.baseHp );
     } )
     charsGet.removeClass( 'player enemy' );
   };
@@ -233,6 +252,13 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
       enemiesText.text( 'Select an Enemy to fight!' );
     } );
   };
+
+  initHp = () => {
+    $.each(chars, function ( i, prop ) {
+      prop.charHpGet.text( prop.baseHp );
+    } )
+  };
+
 
   initCl = () => {
     console.log( 
