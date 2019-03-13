@@ -1,9 +1,7 @@
 $( document ).ready( function() {
 
 // Declare variables
-let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
-   
-    let consoleLog = 0;
+let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, consoleLog;
 
     let chars = [
       char1 = {
@@ -13,12 +11,13 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
         baseHp: 100,
         atk: 1,
         baseAtk: 1,
-        counterAtk: 1,
+        counterAtk: 20,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char1' ),
         charHpGet: $( '#char1-hp' ),
         dmgList: $( '#char1-dmg '),
+        dmgListSelector: $( '#char1-dmg > p'),
       },
 
       char2 = {
@@ -34,6 +33,7 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
         charGet: $( '#char2' ),
         charHpGet: $( '#char2-hp' ),
         dmgList: $( '#char2-dmg '),
+        dmgListSelector: $( '#char2-dmg > p'),
       },
 
       char3 = {
@@ -49,6 +49,7 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
         charGet: $( '#char3' ),
         charHpGet: $( '#char3-hp' ),
         dmgList: $( '#char3-dmg '),
+        dmgListSelector: $( '#char3-dmg > p'),
       },
 
       char4 = {
@@ -56,14 +57,15 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
         charId: 'char4',
         hp: 100,
         baseHp: 100,
-        atk: 10,
-        baseAtk: 10,
-        counterAtk: 5,
+        atk: 1,
+        baseAtk: 1,
+        counterAtk: 1,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char4' ),
         charHpGet: $( '#char4-hp' ),
         dmgList: $( '#char4-dmg '),
+        dmgListSelector: $( '#char4-dmg > p'),
       },
     ];
 
@@ -86,6 +88,7 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
     playerChar = null;
     fighterChar = null;
     gameOver = false;
+    fightOver = false;
     playerId = '';
     fighterId = '';
     enemies = [];
@@ -117,6 +120,7 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
       // Only run if there is no current fighter and the game isn't over
       if ( !fighterChar && !gameOver ) {
         fighterId = this.id;
+        fightOver = false;
         // Loop for each char object in the chars array
         charsGet.each( function( i ) {
           // Find fighter
@@ -156,34 +160,45 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
   attack.on( 'click', function() {
     // Only run if player and fighter aren't at or below 0 hp
     if ( fighterChar && playerChar.hp > 0 ) {
-        playerChar.hp -= fighterChar.counterAtk;      // Player loses hp equal to fighter's counter attack
-        fighterChar.hp -= playerChar.atk;             // Fighter loses hp equal to player's attack
-        damageText();
-        playerChar.charHpGet.text( playerChar.hp );   // Update HP values on screen     
-        fighterChar.charHpGet.text( fighterChar.hp );
-      // Check if player will fall to or below 0 hp on next attack
-      if ( playerChar.hp <= fighterChar.counterAtk ) {
-        playerChar.hp -= fighterChar.counterAtk;
-        loseGame();
-        // Check if fighter will fall to or below 0 hp on next attack
-      } else if ( fighterChar.hp <= playerChar.atk ) {
-        fighterChar.hp -= playerChar.atk;
-        winFight();
-      }
+      playerChar.hp -= fighterChar.counterAtk;      // Player loses hp equal to fighter's counter attack
+      fighterChar.hp -= playerChar.atk;             // Fighter loses hp equal to player's attack
+      damageText();
+      playerChar.charHpGet.text( playerChar.hp );   // Update HP values on screen     
+      fighterChar.charHpGet.text( fighterChar.hp );
+      fightStatus();
       playerChar.atk += playerChar.baseAtk;           // Increment player's attack by base attack on each attack
     }
   } );
 
+  fightStatus = () => {
+    // Check if fighter will fall to or below 0 hp on next attack
+    if ( fighterChar.hp * 2 <= playerChar.atk ) {
+      fighterChar.hp <= playerChar.atk
+      winFight();
+    // Check if player will fall to or below 0 hp on next attack
+    } else if ( playerChar.hp * 2 <= fighterChar.counterAtk ) {
+      playerChar.hp <= fighterChar.counterAtk;
+      loseGame();      
+    }
+  }
+
   // Display and animate damage taken by player and fighter
   damageText = () => {
-    if ( ( playerChar.dmgList ).children().length >= 2 ) {
-      playerChar.dmgList.children().last().fadeOut( 2000 )
+    fighterChar.dmgList.prepend( '<p> -' + playerChar.atk + '</p>' );
+    playerChar.dmgList.prepend( '<p> -' + fighterChar.counterAtk + '</p>' );
+    let playerDmgList = playerChar.dmgList.find( 'p' )
+    let fighterDmgList = fighterChar.dmgList.find( 'p' )
+    if ( playerChar.dmgList.children().length > 3 ) {
+      playerDmgList.slice( 3 ).fadeOut( 500, function() {
+        playerDmgList.slice( 3 ).remove();
+      } )
     }
-    if ( ( fighterChar.dmgList ).children().length >= 2 ) {
-      fighterChar.dmgList.children().last().fadeOut( 2000 )
+    if (fighterChar.dmgList.children().length > 3) {
+      fighterDmgList.slice( 3 ).fadeOut( 500, function() {
+        fighterDmgList.slice( 3 ).remove();
+      } )
     }
-    fighterChar.dmgList.prepend( '<p class="dmg-text"> -' + playerChar.atk + '</p>' );
-    playerChar.dmgList.prepend( '<p class="dmg-text"> -' + fighterChar.counterAtk + '</p>' );
+
   }
 
   // Win & Lose
@@ -275,20 +290,7 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
     } )
   };
 
-
-  initCl = () => {
-    console.log( 
-      'playerChar: '    + playerChar +
-      'fighterChar: '   + fighterChar +
-      'playerId: '      + playerId +
-      'fighterId: '     + fighterId +
-      'hasId: '         + hasId +
-      'gameOver: '      + gameOver +
-      'enemies: '       + enemies 
-    )
-  
-  }
-
+  consoleLog = 0;
   // Console log on ` backquote `
   $( document ).keyup( function( event ) {
     if ( event.keyCode == 192 ) {
@@ -308,6 +310,7 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
     }
   } );
 
+  // Set initial variables
   initialize();
 
 } ); // End Document ready
