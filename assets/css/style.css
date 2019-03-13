@@ -10,6 +10,7 @@ body, html {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  padding: 1rem;
 }
 
 h1 {
@@ -56,8 +57,8 @@ h1 {
 
 .attack-button {
   position: absolute;
-  left: 18.3rem;
-  top: 9rem;
+  left: 19.3rem;
+  top: 10rem;
 }
 
 .defender {

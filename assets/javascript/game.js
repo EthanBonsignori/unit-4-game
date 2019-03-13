@@ -1,20 +1,9 @@
 $( document ).ready( function() {
 
 // Declare variables
-let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, consoleLog;
-
-  initialize = () => {
-    playerChar = null;
-    fighterChar = null;
-    playerId = '';
-    fighterId = '';
-    hasId = false;
-    gameOver = false;
-    enemies = [];
-    initHp();
-  };
-    
-    consoleLog = 0;
+let playerChar, fighterChar, gameOver, playerId, fighterId, enemies;
+   
+    let consoleLog = 0;
 
     let chars = [
       char1 = {
@@ -22,9 +11,9 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
         charId: 'char1',
         hp: 100,
         baseHp: 100,
-        atk: 7,
-        baseAtk: 10,
-        counterAtk: 5,
+        atk: 1,
+        baseAtk: 1,
+        counterAtk: 1,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char1' ),
@@ -37,9 +26,9 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
         charId: 'char2',
         hp: 100,
         baseHp: 100,
-        atk: 100,
-        baseAtk: 10,
-        counterAtk: 5,
+        atk: 2,
+        baseAtk: 2,
+        counterAtk: 1,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char2' ),
@@ -52,9 +41,9 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
         charId: 'char3',
         hp: 100,
         baseHp: 100,
-        atk: 10,
-        baseAtk: 10,
-        counterAtk: 5,
+        atk: 1,
+        baseAtk: 1,
+        counterAtk: 1,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char3' ),
@@ -90,33 +79,51 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
   let resetButton = $( '#reset-button' );
   let resetPosition = $( '.characters-start' );
   let defeated = $( '.defeated' );
+  let dmgContainer = $( '.dmg-container' );
 
-  // Select a player character
+  // Run at start/new game to set/reset necessary variables
+  initialize = () => {
+    playerChar = null;
+    fighterChar = null;
+    gameOver = false;
+    playerId = '';
+    fighterId = '';
+    enemies = [];
+    initHp();       // Display starting hp to screen
+  };
+
+  // Get clicks on any character
   charsGet.on( "click", function() {
-    if ( !hasId && !playerChar && !gameOver ) { 
+    // Only run if no player has been selected and the game isn't over
+    if (!playerChar && !gameOver ) {
       playerId = this.id;
-      charsGet.each( function( i ) { 
+      // Loop for each char object in the chars array
+      charsGet.each( function( i ) {
+        // Find which character was character was clicked
         if ( chars[i].charId === playerId ) {
-          playerChar = chars[i];
+          playerChar = chars[i];    // Set character to player state
           chars[i].isPlayer = true;
           chars[i].charGet.addClass( 'player' )
         } else {
-          chars[i].isEnemy = true;
+          chars[i].isEnemy = true;  // Set any character that is not player to enemy state
           chars[i].charGet.addClass( 'enemy' )
         }
       } )
       moveEnemy();
-      hasId = true;
     };
-    // Select an enemy to Fight
+
+    // Run if clicked on enemy only
     if ( $( this ).hasClass( 'enemy' ) ) {
-      if ( !gameOver && !fighterChar ) {
+      // Only run if there is no current fighter and the game isn't over
+      if ( !fighterChar && !gameOver ) {
         fighterId = this.id;
+        // Loop for each char object in the chars array
         charsGet.each( function( i ) {
+          // Find fighter
           if ( chars[i].charId === fighterId ) {
-            fighterChar = chars[i];
-            fighterName = chars[i].name;
-            defenderDiv.append( this );
+            fighterChar = chars[i];       // Set fighter
+            fighterName = chars[i].name;  // (for console log)
+            defenderDiv.append( this );   // Move to defender positionn
             // Animations
             defenderDiv.show( 'slow' );
             attackButton.show();
@@ -130,11 +137,12 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
     }
   } );
 
-  // Pushes enemies to the enemy div
+  // Moves enemies to the enemy position on screen
   moveEnemy = () => {
-    $( '.enemy ').each( function( i ) {
-      enemies.push( chars[i].name );
-      enemyDiv.append( this );
+    // Loop for each enemy
+    $( '.enemy' ).each( function( i ) {
+      enemies.push( chars[i].name );  // Add enemy name to enemies array
+      enemyDiv.append( this );        // Move to enemies position
       // Animations
       enemyDiv.show( 'slow' );
       selectText.fadeOut( 350, function() {
@@ -146,14 +154,14 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
 
   // Attack & Defend
   attack.on( 'click', function() {
+    // Only run if player and fighter aren't at or below 0 hp
     if ( fighterChar && playerChar.hp > 0 ) {
-        playerChar.hp -= fighterChar.counterAtk;        // Player loses hp equal to fighter's counter attack
-        fighterChar.hp -= playerChar.atk;               // Fighter loses hp equal to player's attack
+        playerChar.hp -= fighterChar.counterAtk;      // Player loses hp equal to fighter's counter attack
+        fighterChar.hp -= playerChar.atk;             // Fighter loses hp equal to player's attack
         damageText();
-        // Update HP values on screen
-        playerChar.charHpGet.text( playerChar.hp );     
+        playerChar.charHpGet.text( playerChar.hp );   // Update HP values on screen     
         fighterChar.charHpGet.text( fighterChar.hp );
-        // Check if player will fall to or below 0 hp on next attack
+      // Check if player will fall to or below 0 hp on next attack
       if ( playerChar.hp <= fighterChar.counterAtk ) {
         playerChar.hp -= fighterChar.counterAtk;
         loseGame();
@@ -162,33 +170,31 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
         fighterChar.hp -= playerChar.atk;
         winFight();
       }
-      playerChar.atk += playerChar.baseAtk;           // Increment player's attack by base attack
+      playerChar.atk += playerChar.baseAtk;           // Increment player's attack by base attack on each attack
     }
   } );
 
-  // Display and animate damage taken and given
+  // Display and animate damage taken by player and fighter
   damageText = () => {
-    if ( ( playerChar.dmgList ).children().length >= 3 ) {
+    if ( ( playerChar.dmgList ).children().length >= 2 ) {
       playerChar.dmgList.children().last().fadeOut( 2000 )
     }
-    if ( ( fighterChar.dmgList ).children().length >= 3 ) {
+    if ( ( fighterChar.dmgList ).children().length >= 2 ) {
       fighterChar.dmgList.children().last().fadeOut( 2000 )
     }
     fighterChar.dmgList.prepend( '<p class="dmg-text"> -' + playerChar.atk + '</p>' );
     playerChar.dmgList.prepend( '<p class="dmg-text"> -' + fighterChar.counterAtk + '</p>' );
-    //fighterChar.dmgTakenPlayer.fadeOut( 5000 );
-    //playerChar.dmgTakenEnemy.fadeOut( 5000 );
   }
 
   // Win & Lose
   winFight = () => {
-    console.log( 'you won this fight' );
-    defeated.append( fighterChar.charGet )
-    enemies.splice( enemies.indexOf( fighterChar.name ), 1 );
+    defeated.append( fighterChar.charGet )                      // Hide defeated enemy
+    enemies.splice( enemies.indexOf( fighterChar.name ), 1 );   // Remove enemy from enemies array
+    // Check if all enemies are defeated
     if ( enemies.length === 0 ) {
       winGame();
     } else {
-      fighterChar = null;
+      fighterChar = null;   // Allows user to select a new fighter
       isFighting = false;
       // Animations
       defenderDiv.hide();
@@ -215,6 +221,7 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
     gameOver = true;
     console.log( 'You lose' );
 
+    // Animations
     resetButton.show();
     attackButton.hide();
     enemiesText.fadeOut( 150, function() {
@@ -224,27 +231,35 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
 
   // Reset
   resetButton.on( 'click', function() {
-    initialize();
-    resetChars();
-    resetGameState();
+    initialize();    // Reset needed variables
+    resetChars();    // Reset character object variables
+    resetGame();     // Reset Text on screen
     gameOver = false;
   } );
 
   resetChars = () => {
-    $.each(chars, function ( i, prop ) {
+    // Loop for each character object in the chars array
+    $.each( chars, function ( i, prop ) {
+      // Reset needed variables
       prop.isPlayer = false;
       prop.isEnemy = false;
       prop.hp = prop.baseHp;
       prop.atk = prop.baseAtk;
       resetPosition.prepend( prop.charGet );
       prop.charHpGet.text( prop.baseHp );
+      prop.dmgList.remove( 'p' );
     } )
     charsGet.removeClass( 'player enemy' );
   };
 
-  resetGameState = () => {
+  resetGame = () => {
     resetButton.hide();
     attackButton.hide();
+    // Loop for each damage container
+    $.each( dmgContainer, function() {
+      dmgContainer.empty();     // Remove all children containing damage text
+    } );
+    // Reset texts
     selectText.fadeOut( 150, function() {
       selectText.text( 'Chose your Character!' ).fadeIn( 150 );
     } );
@@ -253,8 +268,9 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
     } );
   };
 
+  // Display starting hp to screen
   initHp = () => {
-    $.each(chars, function ( i, prop ) {
+    $.each( chars, function ( i, prop ) {
       prop.charHpGet.text( prop.baseHp );
     } )
   };
@@ -279,32 +295,18 @@ let playerChar, fighterChar, playerId, fighterId, hasId, gameOver, enemies, cons
       consoleLog++;
       let enemyList = enemies.join( ', ' );
       console.log( '======== Begin Log ' + consoleLog + ' ========' );
-      if (playerChar) { 
+      if ( playerChar ) { 
         console.log( 'Player: ' + playerChar.name + ' (' + playerId + ')');
         console.log( 'Player Attack: ' + playerChar.atk + " | HP: " + playerChar.hp );
       };
-      if (fighterChar) { 
+      if ( fighterChar ) { 
         console.log( 'Fighter: ' + fighterChar.name + ' (' + fighterId + ')' );
-        console.log( 'Fighter Attack: ' + fighterChar.atk + " | HP: " + fighterChar.hp );
+        console.log( 'Fighter Counter Attack: ' + fighterChar.counterAtk + " | HP: " + fighterChar.hp );
       };
       if ( playerChar ) { console.log( 'Enemies: ' + enemyList ) };
       console.log( '======== End Log ' + consoleLog + ' ========' );
     }
   } );
-
-
-  initCl = () => {
-    console.log( 
-      'playerChar: '       + playerChar +
-      ' | fighterChar: '   + fighterChar +
-      ' | playerId: '      + playerId +
-      ' | fighterId: '     + fighterId +
-      ' | hasId: '         + hasId +
-      ' | gameOver: '      + gameOver +
-      ' | Enemies: '       + enemies 
-    )
-  
-  }
 
   initialize();
 
