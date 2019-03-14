@@ -23,6 +23,11 @@ h1 {
   text-align: center;
 }
 
+#subtitle {
+  text-align: center;
+  color: #d6d6d6
+}
+
 .container { 
   margin-top: 1rem;
 }

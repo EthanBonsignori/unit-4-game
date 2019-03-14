@@ -1,7 +1,7 @@
 $( document ).ready( function() {
 
 // Declare variables
-let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, consoleLog;
+let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText, chosenString, consoleLog;
 
     let chars = [
       char1 = {
@@ -17,7 +17,6 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
         charGet: $( '#char1' ),
         charHpGet: $( '#char1-hp' ),
         dmgList: $( '#char1-dmg '),
-        dmgListSelector: $( '#char1-dmg > p'),
       },
 
       char2 = {
@@ -33,7 +32,6 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
         charGet: $( '#char2' ),
         charHpGet: $( '#char2-hp' ),
         dmgList: $( '#char2-dmg '),
-        dmgListSelector: $( '#char2-dmg > p'),
       },
 
       char3 = {
@@ -49,7 +47,6 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
         charGet: $( '#char3' ),
         charHpGet: $( '#char3-hp' ),
         dmgList: $( '#char3-dmg '),
-        dmgListSelector: $( '#char3-dmg > p'),
       },
 
       char4 = {
@@ -65,7 +62,6 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
         charGet: $( '#char4' ),
         charHpGet: $( '#char4-hp' ),
         dmgList: $( '#char4-dmg '),
-        dmgListSelector: $( '#char4-dmg > p'),
       },
     ];
 
@@ -97,7 +93,6 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
     playerChar = null;
     fighterChar = null;
     gameOver = false;
-    fightOver = false;
     playerId = '';
     fighterId = '';
     enemies = [];
@@ -131,7 +126,6 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
       // Only run if there is no current fighter and the game isn't over
       if ( !fighterChar && !gameOver ) {
         fighterId = this.id;
-        fightOver = false;
         // Loop for each char object in the chars array
         charsGet.each( function( i ) {
           // Find fighter
@@ -232,10 +226,15 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
     } )
   };
 
+  defeatText = [ ' bit the dust!', ' lost all their stuffing!', ' was obliterated!', ' was put in timeout!', ' ran home crying!',
+                 ' got erased!', ' fell down the rabbit hole!', ' needs new underwear!', ' went down for a nap!', ' was never seen again!' ]
+  
   // Win & Lose
   winFight = () => {
-    defeatedText.text( fighterChar.name + ' was defeated' )
+    chosenString = defeatText[Math.floor( Math.random() * defeatText.length )]; // Chose random string from defeatText to display
+    defeatedText.text( fighterChar.name + chosenString )                        // Display name + random string
     defeatedText.show( 500 )
+    fighterText.text( 'Defender' ).fadeOut( 250 )
     defeated.append( fighterChar.charGet )                      // Hide defeated enemy
     enemies.splice( enemies.indexOf( fighterChar.name ), 1 );   // Remove enemy from enemies array
     // Check if all enemies are defeated
@@ -258,9 +257,10 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
     console.log( 'YOU WIN' )
 
     // Animations
+    fighterText.hide();
     resetButton.show();
     attackButton.hide();
-    damageText.hide( 500 )
+    damageText.hide()
     enemiesText.fadeOut( 150, function() {
       enemiesText.text( 'You Win!!!' ).fadeIn( 150 );
     } )
