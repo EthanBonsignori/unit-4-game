@@ -1,17 +1,17 @@
 $( document ).ready( function() {
 
 // Declare variables
-let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText, chosenString, consoleLog;
+let playerChar, fighterChar, isFighting, gameOver, playerId, fighterId, enemies, defeatText, chosenString, consoleLog;
 
     let chars = [
       char1 = {
         name: 'Pooh the Destroyer',
         charId: 'char1',
-        hp: 100,
-        baseHp: 100,
-        atk: 1,
-        baseAtk: 1,
-        counterAtk: 20,
+        hp: 180,
+        baseHp: 180,
+        atk: 4,
+        baseAtk: 4,
+        counterAtk: 25,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char1' ),
@@ -22,11 +22,11 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
       char2 = {
         name: 'Man Bear Piglet',
         charId: 'char2',
-        hp: 100,
-        baseHp: 100,
-        atk: 2,
-        baseAtk: 2,
-        counterAtk: 1,
+        hp: 150,
+        baseHp: 150,
+        atk: 6,
+        baseAtk: 6,
+        counterAtk: 20,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char2' ),
@@ -37,11 +37,11 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
       char3 = {
         name: 'Convict Tigger',
         charId: 'char3',
-        hp: 100,
-        baseHp: 100,
-        atk: 1,
-        baseAtk: 1,
-        counterAtk: 1,
+        hp: 120,
+        baseHp: 120,
+        atk: 8,
+        baseAtk: 8,
+        counterAtk: 17,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char3' ),
@@ -54,9 +54,9 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
         charId: 'char4',
         hp: 100,
         baseHp: 100,
-        atk: 1,
-        baseAtk: 1,
-        counterAtk: 1,
+        atk: 12,
+        baseAtk: 12,
+        counterAtk: 5,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char4' ),
@@ -92,6 +92,7 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
   initialize = () => {
     playerChar = null;
     fighterChar = null;
+    isFighting = false;
     gameOver = false;
     playerId = '';
     fighterId = '';
@@ -99,14 +100,14 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
     initHp();       // Display starting hp to screen
   };
 
-  // Get clicks on any character
+  // Get clicks on any character for character and enemy selection
   charsGet.on( "click", function() {
     // Only run if no player has been selected and the game isn't over
     if (!playerChar && !gameOver ) {
       playerId = this.id;
       // Loop for each char object in the chars array
       charsGet.each( function( i ) {
-        // Find which character was character was clicked
+        // Find which character was clicked for player selection
         if ( chars[i].charId === playerId ) {
           playerChar = chars[i];    // Set character to player state
           chars[i].isPlayer = true;
@@ -121,8 +122,8 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
 
     // Run if clicked on enemy only
     if ( $( this ).hasClass( 'enemy' ) ) {
-      // Hide 'x was defeated' text and then clear it
-      updateDefeatedText();
+      hideDefeatedText();
+      isFighting = true;
       // Only run if there is no current fighter and the game isn't over
       if ( !fighterChar && !gameOver ) {
         fighterId = this.id;
@@ -131,7 +132,6 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
           // Find fighter
           if ( chars[i].charId === fighterId ) {
             fighterChar = chars[i];       // Set fighter
-            fighterName = chars[i].name;  // (for console log)
             defenderDiv.append( this );   // Move to defender positionn
             // Animations
             defenderDiv.show( 'slow' );
@@ -140,7 +140,7 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
           enemiesText.fadeOut( 350, function() {
             enemiesText.text( 'Fighting...' ).fadeIn( 350 );
           } )
-          fighterText.text( 'Defender' ).fadeIn( 1000 )
+          fighterText.text( 'Defender' ).fadeIn( 'slow' )
         } )
       }    
     }
@@ -165,25 +165,32 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
   attack.on( 'click', function() {
     // Only run if player and fighter aren't at or below 0 hp
     if ( fighterChar && playerChar.hp > 0 ) {
-      playerChar.hp -= fighterChar.counterAtk;      // Player loses hp equal to fighter's counter attack
-      fighterChar.hp -= playerChar.atk;             // Fighter loses hp equal to player's attack
-      updateDamageList();
-      playerChar.charHpGet.text( playerChar.hp );   // Update HP values on screen     
-      fighterChar.charHpGet.text( fighterChar.hp );
       fightStatus();
-      playerChar.atk += playerChar.baseAtk;           // Increment player's attack by base attack on each attack
+      // Check if the fight has been won or lost
+      if ( isFighting ) {
+        playerChar.hp -= fighterChar.counterAtk;      // Player loses hp equal to fighter's counter attack
+        fighterChar.hp -= playerChar.atk;             // Fighter loses hp equal to player's attack
+        updateDamageList();
+        updateHpText();
+      }
+      playerChar.atk += playerChar.baseAtk;         // Increment player's attack by base attack on each attack
     }
   } );
 
+  // Check health values to see which character wins or loses the fight
   fightStatus = () => {
     // Check if fighter will fall to or below 0 hp on next attack
-    if ( fighterChar.hp * 2 <= playerChar.atk ) {
-      fighterChar.hp <= playerChar.atk
+    if ( fighterChar.hp <= playerChar.atk ) {
+      fighterChar.hp -= playerChar.atk
+      updateHpText();
       winFight();
+      isFighting = false;
     // Check if player will fall to or below 0 hp on next attack
-    } else if ( playerChar.hp * 2 <= fighterChar.counterAtk ) {
-      playerChar.hp <= fighterChar.counterAtk;
-      loseGame();      
+    } else if ( playerChar.hp <= fighterChar.counterAtk ) {
+      playerChar.hp -= fighterChar.counterAtk;
+      updateHpText();
+      loseGame();
+      isFighting = false;
     }
   }
 
@@ -206,11 +213,17 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
     updateDamageText();
   };
   
+  // Update HP values on screen
+  updateHpText = () => {
+    playerChar.charHpGet.text( playerChar.hp );        
+    fighterChar.charHpGet.text( fighterChar.hp );
+  };
+  
 
   // Update text below characters
   updateDamageText = () => {
     if ( gameOver ) {
-      
+      damageText.hide( 500 );
     } else {
       playerDamageTaken.text( fighterChar.counterAtk );
       fighterNameText.text( fighterChar.name );
@@ -219,22 +232,26 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
     }
   }
 
-  // Hide the 'x was defeated' text and then clear it
+  defeatText = [ ' bit the dust!', ' lost all their stuffing!', ' was obliterated!', ' was put in timeout!', ' ran home crying!',
+                 ' got erased!', ' fell down the rabbit hole!', ' needs new underwear!', ' went down for a nap!', ' was never seen again!' ]
+  
   updateDefeatedText = () => {
+    chosenString = defeatText[Math.floor( Math.random() * defeatText.length )]; // Chose random string from defeatText to display
+    defeatedText.text( fighterChar.name + chosenString )                        // Display name + random string
+    defeatedText.show( 500 )
+    fighterText.text( 'Defender' ).fadeOut( 250 )
+  }
+
+  // Hide the 'x was defeated' text and then clear it
+  hideDefeatedText = () => {
     defeatedText.fadeOut( 500, function() {
       defeatedText.text( '' )
     } )
   };
 
-  defeatText = [ ' bit the dust!', ' lost all their stuffing!', ' was obliterated!', ' was put in timeout!', ' ran home crying!',
-                 ' got erased!', ' fell down the rabbit hole!', ' needs new underwear!', ' went down for a nap!', ' was never seen again!' ]
-  
   // Win & Lose
   winFight = () => {
-    chosenString = defeatText[Math.floor( Math.random() * defeatText.length )]; // Chose random string from defeatText to display
-    defeatedText.text( fighterChar.name + chosenString )                        // Display name + random string
-    defeatedText.show( 500 )
-    fighterText.text( 'Defender' ).fadeOut( 250 )
+    updateDefeatedText();
     defeated.append( fighterChar.charGet )                      // Hide defeated enemy
     enemies.splice( enemies.indexOf( fighterChar.name ), 1 );   // Remove enemy from enemies array
     // Check if all enemies are defeated
@@ -242,7 +259,6 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
       winGame();
     } else {
       fighterChar = null;   // Allows user to select a new fighter
-      isFighting = false;
       // Animations
       defenderDiv.hide();
       attackButton.hide();
@@ -254,7 +270,7 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
 
   winGame = () => {
     gameOver = true;
-    console.log( 'YOU WIN' )
+    console.log( 'You win' )
 
     // Animations
     fighterText.hide();
@@ -283,7 +299,8 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
     resetChars();    // Reset character object variables
     resetGame();     // Reset Text on screen
     updateDamageText();
-    updateDefeatedText();
+    hideDefeatedText();
+    fighterText.text( 'Defender' ).fadeOut( 250 );
     initialize();    // Reset needed variables
     gameOver = false;
   } );
@@ -336,6 +353,7 @@ let playerChar, fighterChar, gameOver, playerId, fighterId, enemies, defeatText,
       if ( playerChar ) { 
         console.log( 'Player: ' + playerChar.name + ' (' + playerId + ')');
         console.log( 'Player Attack: ' + playerChar.atk + " | HP: " + playerChar.hp );
+        console.log( "Is there a fight going on: " + isFighting );
       };
       if ( fighterChar ) { 
         console.log( 'Fighter: ' + fighterChar.name + ' (' + fighterId + ')' );
