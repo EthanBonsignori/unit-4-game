@@ -18,8 +18,38 @@ h1 {
   display: block;
 }
 
-.dmg-text {
+#title {
+  font-size: 3rem;
+  text-align: center;
+}
+
+.container { 
   margin-top: 1rem;
+}
+
+.container:before,
+.container:after {
+  content: " ";
+  display: table; 
+}
+
+.container:after {
+  clear: both;
+}
+
+.character-text {
+  margin-top: 1rem;
+  margin-bottom: -1rem;
+  width: 495px;
+}
+
+#your-char {
+  display: inline;
+}
+
+#fighter-char {
+  float: right;
+  display: none;
 }
 
 .characters {
@@ -36,31 +66,53 @@ h1 {
 }
 
 .dmg-container {
+  text-align: left;
   height: 100%;
   width: 3rem;
 }
 
 .dmg-container p {
-  text-align: left;
+  text-align: right;
   font-size: 2.8rem;
   line-height: 2.3rem;
   color: red;
 }
 
+.dmg-text {
+  width: 655px;
+  margin-top: 8px;
+}
+
+#dmg-recieved {
+  display: inline-block;
+}
+
+#dmg-dealt {
+  float: right;
+}
+
+#player-damage-taken {
+  color: red;
+}
+
+#fighter-damage-taken {
+  color: rgb(0, 255, 0);
+}
+
+.defeated-text {
+  color: rgb(0, 255, 0);
+  font-weight: bold;
+}
+
 .attack-button {
   position: absolute;
   left: 19.3rem;
-  top: 10rem;
+  top: 12rem;
 }
 
 .defender {
   position: relative;
   left: 5rem;
-}
-
-#defender-text {
-  position: absolute;
-  bottom: 0;
 }
 
 .char-text {
@@ -88,16 +140,6 @@ h1 {
 
 #pic4 {
   background-image: url(../images/char4.jpg);
-}
-
-.container:before,
-.container:after {
-  content: " ";
-  display: table; 
-}
-
-.container:after {
-  clear: both;
 }
 
 .player {

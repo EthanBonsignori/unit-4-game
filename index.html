@@ -23,7 +23,10 @@
 
 <h1 id="title">Pooh RPG</h1>
 
-<div class="container dmg-text">You recieved 9 damage.</div>
+<div class="character-text">
+  <h1 id="your-char">Choose your Character!</h1>
+  <h1 id="fighter-char"></h1>
+</div>
 
 <div class="container characters-start">
 
@@ -71,7 +74,18 @@
  
 </div> <!-- End Container -->
 
-<h1 id="your-char">Choose your Character!</h1>
+<div class="container dmg-text hidden">
+  <div id="dmg-recieved">
+    You took <span id="player-damage-taken">
+    </span> damage.
+  </div>
+  <div id="dmg-dealt">
+    <span id="fighter-name"></span> took 
+    <span id="fighter-damage-taken"></span> damage.
+  </div>
+</div>
+
+<div class="defeated-text hidden"></div>
 
 <div class="container">
   <div class="enemies hidden"> <h1 id="enemies-text">Select an Enemy to fight!</h1> </div>

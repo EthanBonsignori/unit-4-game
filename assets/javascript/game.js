@@ -5,7 +5,7 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
 
     let chars = [
       char1 = {
-        name: 'Pooh',
+        name: 'Pooh the Destroyer',
         charId: 'char1',
         hp: 100,
         baseHp: 100,
@@ -21,7 +21,7 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
       },
 
       char2 = {
-        name: 'Piglet',
+        name: 'Man Bear Piglet',
         charId: 'char2',
         hp: 100,
         baseHp: 100,
@@ -37,7 +37,7 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
       },
 
       char3 = {
-        name: 'Tigger',
+        name: 'Convict Tigger',
         charId: 'char3',
         hp: 100,
         baseHp: 100,
@@ -53,7 +53,7 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
       },
 
       char4 = {
-        name: 'Owl',
+        name: 'Owl, Feathery Wizard',
         charId: 'char4',
         hp: 100,
         baseHp: 100,
@@ -71,17 +71,26 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
 
 
   // Get html elements
-  let charsGet = $( '.characters' );
-  let enemyDiv = $( '.enemies' );
-  let selectText = $( '#your-char' );
-  let enemiesText = $( '#enemies-text' );
-  let defenderDiv = $( '.defender' );
-  let attack = $( '#attack' );
-  let attackButton = $( '.attack-button' );
-  let resetButton = $( '#reset-button' );
-  let resetPosition = $( '.characters-start' );
-  let defeated = $( '.defeated' );
-  let dmgContainer = $( '.dmg-container' );
+  let charsGet = $( '.characters' );            // Every character div on screen
+  let enemyDiv = $( '.enemies' );               // Div that will hold enemies when they are found
+  let defenderDiv = $( '.defender' );           // Div that will hold fighter when they are selected
+  let attack = $( '#attack' );                  // Attack button id
+  let attackButton = $( '.attack-button' );     // Div that holds attack button
+  let resetButton = $( '#reset-button' );       // Reset button id
+  let resetPosition = $( '.characters-start' ); // Div for character start position
+  let defeated = $( '.defeated' );              // Div for defeated enemies to hide
+  let dmgContainer = $( '.dmg-container' );     // Every character's damage container
+
+  // Text only
+  let enemiesText = $( '#enemies-text' );      
+  let playerText = $( '#your-char' );
+  let fighterText = $( '#fighter-char' );
+  let damageText = $( '.dmg-text' );
+  let fighterNameText = $( '#fighter-name' );
+  let playerDamageTaken = $( '#player-damage-taken' );
+  let fighterDamageTaken = $( '#fighter-damage-taken' );
+  let defeatedText = $( '.defeated-text' );
+
 
   // Run at start/new game to set/reset necessary variables
   initialize = () => {
@@ -117,6 +126,8 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
 
     // Run if clicked on enemy only
     if ( $( this ).hasClass( 'enemy' ) ) {
+      // Hide 'x was defeated' text and then clear it
+      updateDefeatedText();
       // Only run if there is no current fighter and the game isn't over
       if ( !fighterChar && !gameOver ) {
         fighterId = this.id;
@@ -135,7 +146,7 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
           enemiesText.fadeOut( 350, function() {
             enemiesText.text( 'Fighting...' ).fadeIn( 350 );
           } )
-          
+          fighterText.text( 'Defender' ).fadeIn( 1000 )
         } )
       }    
     }
@@ -149,8 +160,8 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
       enemyDiv.append( this );        // Move to enemies position
       // Animations
       enemyDiv.show( 'slow' );
-      selectText.fadeOut( 350, function() {
-        selectText.text( 'Your Character' ).fadeIn( 350 );
+      playerText.fadeOut( 350, function() {
+        playerText.text( 'Your Character' ).fadeIn( 350 );
         enemiesText.text( 'Select an Enemy to fight!' ).fadeIn( 350 );
       } )
     } )
@@ -162,7 +173,7 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
     if ( fighterChar && playerChar.hp > 0 ) {
       playerChar.hp -= fighterChar.counterAtk;      // Player loses hp equal to fighter's counter attack
       fighterChar.hp -= playerChar.atk;             // Fighter loses hp equal to player's attack
-      damageText();
+      updateDamageList();
       playerChar.charHpGet.text( playerChar.hp );   // Update HP values on screen     
       fighterChar.charHpGet.text( fighterChar.hp );
       fightStatus();
@@ -183,7 +194,7 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
   }
 
   // Display and animate damage taken by player and fighter
-  damageText = () => {
+  updateDamageList = () => {
     fighterChar.dmgList.prepend( '<p> -' + playerChar.atk + '</p>' );
     playerChar.dmgList.prepend( '<p> -' + fighterChar.counterAtk + '</p>' );
     let playerDmgList = playerChar.dmgList.find( 'p' )
@@ -198,11 +209,33 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
         fighterDmgList.slice( 3 ).remove();
       } )
     }
+    updateDamageText();
+  };
+  
 
+  // Update text below characters
+  updateDamageText = () => {
+    if ( gameOver ) {
+      
+    } else {
+      playerDamageTaken.text( fighterChar.counterAtk );
+      fighterNameText.text( fighterChar.name );
+      fighterDamageTaken.text( playerChar.atk );
+      damageText.show( 500 )
+    }
   }
+
+  // Hide the 'x was defeated' text and then clear it
+  updateDefeatedText = () => {
+    defeatedText.fadeOut( 500, function() {
+      defeatedText.text( '' )
+    } )
+  };
 
   // Win & Lose
   winFight = () => {
+    defeatedText.text( fighterChar.name + ' was defeated' )
+    defeatedText.show( 500 )
     defeated.append( fighterChar.charGet )                      // Hide defeated enemy
     enemies.splice( enemies.indexOf( fighterChar.name ), 1 );   // Remove enemy from enemies array
     // Check if all enemies are defeated
@@ -227,6 +260,7 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
     // Animations
     resetButton.show();
     attackButton.hide();
+    damageText.hide( 500 )
     enemiesText.fadeOut( 150, function() {
       enemiesText.text( 'You Win!!!' ).fadeIn( 150 );
     } )
@@ -246,9 +280,11 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
 
   // Reset
   resetButton.on( 'click', function() {
-    initialize();    // Reset needed variables
     resetChars();    // Reset character object variables
     resetGame();     // Reset Text on screen
+    updateDamageText();
+    updateDefeatedText();
+    initialize();    // Reset needed variables
     gameOver = false;
   } );
 
@@ -275,8 +311,8 @@ let playerChar, fighterChar, gameOver, fightOver, playerId, fighterId, enemies, 
       dmgContainer.empty();     // Remove all children containing damage text
     } );
     // Reset texts
-    selectText.fadeOut( 150, function() {
-      selectText.text( 'Chose your Character!' ).fadeIn( 150 );
+    playerText.fadeOut( 150, function() {
+      playerText.text( 'Chose your Character!' ).fadeIn( 150 );
     } );
     enemiesText.fadeOut( 150, function() {
       enemiesText.text( 'Select an Enemy to fight!' );
