@@ -112,7 +112,24 @@ h1 {
 .attack-button {
   position: absolute;
   left: 19.3rem;
-  top: 12rem;
+  top: 15rem;
+}
+
+#attack {
+  color: white;
+  background: #047500;
+  cursor: pointer;
+  border: none;
+  height: 3rem;
+  border: 1px solid white;
+}
+
+#attack:hover {
+  background: #035000;
+}
+
+#attack:focus {
+  outline: none;
 }
 
 .defender {
@@ -153,6 +170,24 @@ h1 {
 
 .enemy {
   border: 4px solid red;
+}
+
+#reset-button {
+color: white;
+background: #047500;
+cursor: pointer;
+border: none;
+height: 3rem;
+width: 10rem;
+border: 1px solid white;
+}
+
+#reset-button:hover {
+  background: #035000;
+}
+
+#reset-button:focus {
+  outline: none;
 }
 
 .hidden {
