@@ -8,7 +8,7 @@ let playerChar, fighterChar, isFighting, gameOver, playerId, fighterId, enemies,
         name: 'Pooh the Destroyer',
         charId: 'char1',
         hp: 180,
-        baseHp: 180,
+        baseHp: 140,
         atk: 4,
         baseAtk: 4,
         counterAtk: 25,
@@ -41,7 +41,7 @@ let playerChar, fighterChar, isFighting, gameOver, playerId, fighterId, enemies,
         baseHp: 120,
         atk: 8,
         baseAtk: 8,
-        counterAtk: 17,
+        counterAtk: 10,
         isPlayer: false,
         isEnemy: false,
         charGet: $( '#char3' ),
@@ -308,7 +308,7 @@ let playerChar, fighterChar, isFighting, gameOver, playerId, fighterId, enemies,
   resetChars = () => {
     // Loop for each character object in the chars array
     $.each( chars, function ( i, prop ) {
-      // Reset needed variables
+      // Reset needed character properties
       prop.isPlayer = false;
       prop.isEnemy = false;
       prop.hp = prop.baseHp;
@@ -366,5 +366,8 @@ let playerChar, fighterChar, isFighting, gameOver, playerId, fighterId, enemies,
 
   // Set initial variables
   initialize();
+
+  // Set position at start so it doesn't reverse on reset
+  resetChars();
 
 } ); // End Document ready
